@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Roller et Coquillages</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <!-- js api downside: uses prerendered bitmap tiles at fixed zoom levels -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+function sundayAlign(date) {
+  // earliest sunday datetime in the local tz, at the same day or at most 6 days after
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + (7 - date.getDay()) % 7);
+}
+
+function yyyymmdd(date) {
+  // http://stackoverflow.com/a/3605248/
+  return '' + date.getFullYear()
+    + ('0' + (date.getMonth()+1)).slice(-2)
+    + ('0' + date.getDate()).slice(-2);
+}
+
+function dateShift(date, shift) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 7 * shift);
+}
+
+function updateLink(el, date) {
+  el.textContent = date.toLocaleDateString();
+  el.onclick = function() { setDate(date) };
+}
+
+var layer;
+function setDate(date) {
+  updateLink(document.getElementById('prev'), dateShift(date, -1));
+  document.getElementById('date').textContent = date.toLocaleDateString();
+  updateLink(document.getElementById('next'), dateShift(date, +1));
+  // nb is the number of waypoints requested, see
+  // http://www.rollers-coquillages.org/ou-est-raoul
+  // they should be logged every minute, they are selected by age instead of recency
+  // so we ask for 999 to be sure the most recent are included.
+  // Also accepted (dashes optional in the date, but 0-padding is required regardless):
+  // http://rollers-coquillages.org/parcours/webservice.php?date=yyyy-mm-dd&nb=999
+  var url = 'http://www.rollers-coquillages.org/parcours/kml/' + yyyymmdd(date) + '/999'
+  layer.setUrl(url);
+}
+
+function initialize() {
+  var mapOptions = {};
+  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  layer = new google.maps.KmlLayer({
+    map: map,
+  });
+  var now = new Date();
+  // XXX assumes the browser uses the same tz as Roller & Coquillages
+  var sunday = sundayAlign(now);
+  setDate(sunday);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <a id="prev" href="javascript://"></a>
+    <span id="date"></span>
+    <a id="next" href="javascript://"></a>
+    <div id="map-canvas"></div>
+  </body>
+</html>
+
