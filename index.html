@@ -48,6 +48,7 @@ function setDate(date) {
   // http://rollers-coquillages.org/parcours/webservice.php?date=yyyy-mm-dd&nb=999
   var url = 'http://rollers-coquillages.org/parcours/kml/' + yyyymmdd(date) + '/999'
   layer.setUrl(url);
+  console.log("loading", url);
 }
 
 function initialize() {
@@ -55,6 +56,11 @@ function initialize() {
   var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   layer = new google.maps.KmlLayer({
     map: map,
+  });
+  google.maps.event.addListener(layer,
+      'defaultviewport_changed', function(ev) {
+      if (layer.defaultViewport.toSpan().lng() == 360)
+	console.log('No data', layer.defaultViewport.toString());
   });
   var now = new Date();
   // XXX assumes the browser uses the same tz as Rollers & Coquillages
