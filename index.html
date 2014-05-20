@@ -41,12 +41,12 @@ function setDate(date) {
   document.getElementById('date').textContent = date.toLocaleDateString();
   updateLink(document.getElementById('next'), dateShift(date, +1));
   // nb is the number of waypoints requested, see
-  // http://www.rollers-coquillages.org/ou-est-raoul
+  // http://rollers-coquillages.org/ou-est-raoul
   // they should be logged every minute, they are selected by age instead of recency
   // so we ask for 999 to be sure the most recent are included.
   // Also accepted (dashes optional in the date, but 0-padding is required regardless):
   // http://rollers-coquillages.org/parcours/webservice.php?date=yyyy-mm-dd&nb=999
-  var url = 'http://www.rollers-coquillages.org/parcours/kml/' + yyyymmdd(date) + '/999'
+  var url = 'http://rollers-coquillages.org/parcours/kml/' + yyyymmdd(date) + '/999'
   layer.setUrl(url);
 }
 
