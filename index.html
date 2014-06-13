@@ -60,6 +60,9 @@ function initialize() {
   // XXX assumes the browser uses the same tz as Rollers & Coquillages
   var sunday = sundayAlign(now);
   setDate(sunday);
+  var bikeLayer = new google.maps.BicyclingLayer();
+  bikeLayer.setMap(map);
+
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
