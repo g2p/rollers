@@ -59,8 +59,11 @@ function initialize() {
   });
   google.maps.event.addListener(layer,
       'defaultviewport_changed', function(ev) {
-      if (layer.defaultViewport.toSpan().lng() == 360)
+      if (layer.defaultViewport.toSpan().lng() == 360) {
 	console.log('No data', layer.defaultViewport.toString());
+	// XXX ugly hack for demo purposes
+	document.getElementById('prev').click();
+      }
   });
   var now = new Date();
   // XXX assumes the browser uses the same tz as Rollers & Coquillages
